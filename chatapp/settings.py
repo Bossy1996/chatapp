@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from chatapp import asgi
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -141,3 +142,5 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+ASGI_APPLICATION = "chatapp.asgi.application"
