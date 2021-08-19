@@ -5,8 +5,90 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
+    <!-- Spectre Css -->
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
 </head>
 <body>
-    
+    <div class="container grid-md" >
+        <h1 class="mt-2 text-center">Chat-Application</h1>
+        <div class="columns">
+            <aside class="column col-4">
+                <!-- Alias config -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Name
+                        <input id="name" class="form-input" type="text" placeholder="Coding sheep">
+                    </label>
+                </div>
+            </aside>
+            <main class="column">
+                <section id="messages"></section>
+                <section class="form-group">
+                    <input id="text" class="form-input" type="text" placeholder="New message">
+                    <button id="send" class="btn btn-block">Send</button>
+                </section>
+            </main>
+        </div>
+    </div>
+    <script>
+        const CHAT_ROOM = 'python';
+        const CHAT_SOCKET = new WebSocket('//localhost:8000/chat/' + CHAT_ROOM + '/');
+        const NAME_FIELD = document.getElementById('name');
+        const MESSAGE = document.getElementById('message');
+        const TEXT_FIELD = document.getElementById('text');
+        const SEND_BUTTOM = document.getElementById('send');
+
+        function new_message_to_html(name, text, own = false) {
+            const MY_CONTAINER = document.createElement('div');
+            MY_CONTAINER.classList.add(own ? 'bg-primary' : 'bg-secondary', 'p-2');
+
+            const MY_NAME = document.createElement('h2');
+            MY_NAME.classList.add('text-tiny', 'text-bold', 'mt-2');
+            MY_NAME.textContent = name;
+            MY_CONTAINER.appendChild(MY_NAME);
+
+            const MY_TEXT = document.createElement('p');
+            MY_TEXT.classList.add('my-2');
+            MY_TEXT.textContent = text;
+            MY_CONTAINER.appendChild(MY_TEXT);
+
+            MESSAGE.appendChild(MY_CONTAINER);
+        }
+
+        function send_new_message() {
+            // Sends the new message to the websocket
+            CHAT_SOCKET.send(JSON.stringify({
+                name: NAME_FIELD.value,
+                text: TEXT_FIELD.value,
+                createdAt: Date.now()
+            }));
+            TEXT_FIELD.value = '';
+            TEXT_FIELD.focus();
+        }
+
+        // Events
+        // Connected
+        CHAT_SOCKET.addEventListener('open', () => {
+            console.log('Connected');
+        });
+
+        // Desconnected
+        CHAT_SOCKET.addEventListener('close', () => {
+            console.log('Disconnected');
+        });
+
+        // New message
+        CHAT_SOCKET.addEventListener('message', (event) => {
+            console.log('New message recived');
+            const MY_NEW_DATA = JSON.parse(event.data);
+            new_message_to_html(MY_NEW_DATA.name, MY_NEW_DATA.text, MY_NEW_DATA.name === NAME_FIELD.value);
+        });
+
+        // Send new message when Send buttom clicked
+        SEND_BUTTOM.addEventListener('click', send_new_message);
+
+        // Send new message when Enter buttom clicked
+        TEXT_FIELD.addEventListener('keyup', (e) => e.keyCode === 13 ? send_new_message() : false);
+    </script>
 </body>
 </html>
