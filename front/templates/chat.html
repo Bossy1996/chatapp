@@ -32,7 +32,7 @@
     </div>
     <script>
         const CHAT_ROOM = 'python';
-        const CHAT_SOCKET = new WebSocket('http://127.0.0.1:8000/chat/' + CHAT_ROOM + '/');
+        const CHAT_SOCKET = new WebSocket('http://127.0.0.1:8000/chat/'); //+ CHAT_ROOM + '/');
         const NAME_FIELD = document.getElementById('name');
         const MESSAGE = document.getElementById('message');
         const TEXT_FIELD = document.getElementById('text');

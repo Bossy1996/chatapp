@@ -18,8 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 from front import views
+from chat import consumers
 
 urlpatterns = [
     #path('admin/', admin.site.urls),
-    path('', views.chat)
+    path('', views.chat),
+    path('/chat/', consumers.ChatConsumer)
 ]

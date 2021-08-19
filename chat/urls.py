@@ -4,5 +4,5 @@ from . import consumers
 
 
 urlpatterns = [
-    path('/chat/<str:room_name>', consumers.ChatConsumer)
+    path('/chat/', consumers.ChatConsumer)
 ]
